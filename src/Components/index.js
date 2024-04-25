@@ -1,1 +1,1 @@
-export {WeatherApp} from "./WeatherApp"
+export {WeatherApp} from './WeatherApp';

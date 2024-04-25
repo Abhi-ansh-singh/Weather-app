@@ -1,24 +1,69 @@
-// import React from "react";
-
-import axios from "axios";
 import { useState } from "react";
 import { CiSearch } from "react-icons/ci";
-import WindImage from "../../assets/wind.png";
-import HumidityImage from "../../assets/humidity.png";
-import CloudImage from "../../assets/cloud.png";
+import {
+  CLEAR_IMAGE,
+  CLOUD_IMAGE,
+  DRIZZLE_IMAGE,
+  HUMIDITY_IMAGE,
+  RAIN_IMAGE,
+  SNOW_IMAGE,
+  WIND_IMAGE,
+} from "../../config";
 import "./WeatherApp.css";
+import { fetchWeatherData } from "../../module";
 
 const WeatherApp = () => {
   const [search, setSearch] = useState("");
-  const [data, setData] = useState("");
-  const API_key = "518d95e10140ac7e78ff511fde883ee1";
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${API_key}`;
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const searchData = async () => {
-    const response = await axios.get(url);
-    const result = response.data;
-    console.log(result);
-    setData(result);
+    setIsLoading(true);
+    try {
+      const result = await fetchWeatherData(search);
+      setData(result);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getWeatherImage = () => {
+    if (!data) return null;
+
+    const conditionCode = data.weather[0].icon;
+    switch (conditionCode) {
+      case "01d":
+      case "01n":
+        return CLEAR_IMAGE;
+      case "02d":
+      case "02n":
+      case "03d":
+      case "03n":
+      case "04d":
+      case "04n":
+        return CLOUD_IMAGE;
+      case "09d":
+      case "09n":
+        return RAIN_IMAGE;
+      case "10d":
+      case "10n":
+        return DRIZZLE_IMAGE;
+      case "13d":
+      case "13n":
+        return SNOW_IMAGE;
+      default:
+        return CLEAR_IMAGE;
+    }
+  };
+
+  const handleSearch = async () => {
+    if (search) await searchData();
+  };
+
+  const handleKeyPress = async (e) => {
+    if (e.key === "Enter") await handleSearch();
   };
 
   return (
@@ -28,33 +73,44 @@ const WeatherApp = () => {
         <input
           type="text"
           placeholder="Enter your City"
+          value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleKeyPress}
         />
-        <button className="btn" type="submit" onClick={searchData}>
+        <button
+          className="btn"
+          type="submit"
+          onClick={handleSearch}
+          disabled={isLoading}
+        >
           <CiSearch size={25} />
         </button>
       </div>
-      <div>
-        {data ? (
-          <div className="result-container">
-            <div className="main-detail">
-              <img src={CloudImage} alt="" />
-              <h2>{Math.floor(data.main?.temp - 273.15)} °C</h2>
-              <h3>{data.name}</h3>
-            </div>
-            <div className="sub-detail">
-              <div className="wind-area">
-                <img src={WindImage} alt="wind image" />
-                <h3>{Math.floor(data.wind?.speed)} km/h</h3>
+      {data && (
+        <div className="result-container">
+          <div className="search-detail">
+            <img src={getWeatherImage()} alt="weather" />
+            <h2>{Math.floor(data.main.temp - 273.15)} °C</h2>
+            <h3>{data.name}</h3>
+          </div>
+          <div className="sub-detail">
+            <div className="wind-area">
+              <img src={WIND_IMAGE} alt="wind" />
+              <div>
+                <h3>{Math.floor(data.wind.speed)} km/h</h3>
+                <p>Wind</p>
               </div>
-              <div className="humidity-area">
-                <img src={HumidityImage} alt="wind image" />
-                <h3>{data.main?.humidity} %</h3>
+            </div>
+            <div className="humidity-area">
+              <img src={HUMIDITY_IMAGE} alt="humidity" />
+              <div>
+                <h3>{data.main.humidity} %</h3>
+                <p>Humidity</p>
               </div>
             </div>
           </div>
-        ) : null}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
