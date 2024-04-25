@@ -4,7 +4,7 @@ A Weather App made with React .
 
 ## Demo
 
-[https://weather-app-abhi-ansh.vercel.app]
+[https://weather-app-abhi-76.vercel.app]
 
 ## Features
 - Fully Responsive
@@ -24,7 +24,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd 
+  cd WeatherApp
 ```
 
 Install dependencies
