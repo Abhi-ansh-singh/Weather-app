@@ -11,7 +11,7 @@ A Weather App made with React .
 
 ## Screenshots
 
-![App Screenshot](https://i.postimg.cc/28Jv16n4/Screenshot-2024-04-25-122511.png)
+![App Screenshot](https://i.postimg.cc/G2cfbhcG/Screenshot-2024-04-25-131302.png)
 
 ## Run Locally
 
