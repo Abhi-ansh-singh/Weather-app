@@ -59,7 +59,7 @@ const WeatherApp = () => {
   };
 
   const handleSearch = async () => {
-    if (search) await searchData();
+    if (search.trim( )) await searchData();
   };
 
   const handleKeyPress = async (e) => {
