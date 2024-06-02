@@ -59,7 +59,7 @@ const WeatherApp = () => {
   };
 
   const handleSearch = async () => {
-    if (search.trim( )) await searchData();
+    if (search) await searchData();
   };
 
   const handleKeyPress = async (e) => {
@@ -73,7 +73,7 @@ const WeatherApp = () => {
         <input
           type="text"
           placeholder="Enter your City"
-          value={search}
+          value={search.trim()}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleKeyPress}
         />
